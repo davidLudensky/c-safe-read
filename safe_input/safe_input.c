@@ -10,14 +10,18 @@
 #define NULL_CHARACTER '\0'
 #define NEW_LINE '\n'
 #define DECIMAL_BASE 10
+//
 
-static void clear_stdin_buffer(void) {
+static void clear_stdin_buffer(void)
+{
     char ch;
-    while ((ch = getchar()) != '\n' && ch != EOF);
+    while ((ch = getchar()) != NEW_LINE && ch != EOF)
+        ;
 }
 
 // Trims newline and trailing spaces
-static void trim_newline(char *str) {
+static void trim_newline(char *str)
+{
     size_t len = strlen(str);
     while (len > 0 && (str[len - 1] == NEW_LINE || isspace((unsigned char)str[len - 1])))
     {
@@ -26,8 +30,10 @@ static void trim_newline(char *str) {
 }
 
 // Lowercase a string
-static void to_lowercase(char *str, size_t str_length) {
-    for (; *str; ++str) {
+static void to_lowercase(char *str, size_t str_length)
+{
+    for (; *str; ++str)
+    {
         *str = (char)tolower(*str);
     }
 }
@@ -35,10 +41,10 @@ static void to_lowercase(char *str, size_t str_length) {
 static bool get_long_from_string(const char *prompt, char *buffer, long *p_input_long)
 {
     char *endptr = "";
-    
+
     if (!get_string(prompt, buffer, INPUT_BUFFER_SIZE))
     {
-        return false;  
+        return false;
     }
 
     errno = 0;
@@ -47,23 +53,27 @@ static bool get_long_from_string(const char *prompt, char *buffer, long *p_input
     // Numeric input outside long range?
     // Junk after the numeric text?
     // printf()
-    if (endptr == buffer || *endptr != NULL_CHARACTER || errno == ERANGE) {
+    if (endptr == buffer || *endptr != NULL_CHARACTER || errno == ERANGE)
+    {
         return false;
     }
     return true;
 }
 
-bool get_string(const char *prompt, char *buffer, size_t buffer_size) {
+bool get_string(const char *prompt, char *buffer, size_t buffer_size)
+{
     if (!prompt || !buffer || buffer_size == 0)
     {
-        return false;  
+        return false;
     }
 
     printf("%s", prompt);
-    if (fgets(buffer, (int)buffer_size, stdin) == NULL) {
+    if (fgets(buffer, (int)buffer_size, stdin) == NULL)
+    {
         return false;
     }
-    if (strchr(buffer, '\n') == NULL) {
+    if (strchr(buffer, NEW_LINE) == NULL)
+    {
         // Line was too long
         clear_stdin_buffer();
         printf("Input was too long! Only first %zu characters were kept.\n", buffer_size - 1);
@@ -73,11 +83,13 @@ bool get_string(const char *prompt, char *buffer, size_t buffer_size) {
     return true;
 }
 
-bool get_int(const char *prompt, int *out_value) {
+bool get_int(const char *prompt, int *out_value)
+{
     long input_long = 0;
     char buffer[INPUT_BUFFER_SIZE] = "";
 
-    while (true) {
+    while (true)
+    {
         if (!get_long_from_string(prompt, buffer, &input_long))
         {
             printf("Invalid integer. Please try again.\n");
@@ -85,7 +97,8 @@ bool get_int(const char *prompt, int *out_value) {
         }
 
         // Outside int range?
-        if (input_long < INT_MIN || input_long > INT_MAX) {
+        if (input_long < INT_MIN || input_long > INT_MAX)
+        {
             printf("Invalid integer. Please try again.\n");
             continue;
         }
@@ -95,11 +108,13 @@ bool get_int(const char *prompt, int *out_value) {
     }
 }
 
-bool get_long(const char *prompt, long *out_value) {
+bool get_long(const char *prompt, long *out_value)
+{
     long input_long = 0;
     char buffer[INPUT_BUFFER_SIZE] = "";
 
-    while (true) {
+    while (true)
+    {
         if (!get_long_from_string(prompt, buffer, &input_long))
         {
             continue;
@@ -110,18 +125,20 @@ bool get_long(const char *prompt, long *out_value) {
     }
 }
 
-bool get_bool(const char *prompt, bool *out_value) {
+bool get_bool(const char *prompt, bool *out_value)
+{
     char buffer[INPUT_BUFFER_SIZE] = "";
-    static const char *const true_strings[] = { "yes", "y", "true", "1", NULL };
-    static const char *const false_strings[] = { "no", "n", "false", "0", NULL };
+    static const char *const true_strings[] = {"yes", "y", "true", "1", NULL};
+    static const char *const false_strings[] = {"no", "n", "false", "0", NULL};
 
-    while (true) {
+    while (true)
+    {
         if (!get_string(prompt, buffer, sizeof(buffer)))
         {
-            return false;  
+            return false;
         }
         to_lowercase(buffer, (size_t)INPUT_BUFFER_SIZE);
-        
+
         for (int i = 0; true_strings[i]; i++)
         {
             if (strcmp(buffer, true_strings[i]) == 0)
