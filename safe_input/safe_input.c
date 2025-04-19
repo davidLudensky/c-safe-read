@@ -32,7 +32,7 @@ static void to_lowercase(char *str, size_t str_length) {
     }
 }
 
-static bool get_something(const char *prompt, char *buffer, long *p_input_long)
+static bool get_long_from_string(const char *prompt, char *buffer, long *p_input_long)
 {
     char *endptr = "";
     
@@ -78,7 +78,7 @@ bool get_int(const char *prompt, int *out_value) {
     char buffer[INPUT_BUFFER_SIZE] = "";
 
     while (true) {
-        if (!get_something(prompt, buffer, &input_long))
+        if (!get_long_from_string(prompt, buffer, &input_long))
         {
             printf("Invalid integer. Please try again.\n");
             continue;
@@ -100,7 +100,7 @@ bool get_long(const char *prompt, long *out_value) {
     char buffer[INPUT_BUFFER_SIZE] = "";
 
     while (true) {
-        if (!get_something(prompt, buffer, &input_long))
+        if (!get_long_from_string(prompt, buffer, &input_long))
         {
             continue;
         }
